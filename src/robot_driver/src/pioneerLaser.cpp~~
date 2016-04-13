@@ -1,0 +1,27 @@
+#include "ros/ros.h" #include "geometry_msgs/Twist.h"
+int main (int argc, char **argv)
+
+{
+	// command line ROS arguments 
+	// pioneer laser node if the node name 
+	ros::init(argc, argv, "pioneer_laser_node");
+	// ROS comms access point 
+	ros::NodeHandle my_handle;
+	// master (~roscore) registers this publisher // recall lab 1:  geometry_msgs::Twist is the message type, // http://docs.ros.org/api/geometry_msgs/html/msg/Twist.html // recall lab 1: /RosAria/cmd_vel is the topic. We will publish Twist messages on this topic // and the rosaria package will subscribe to this topic to receive our Twist commands. Then // the rosaria package will control the robot.
+	 ros::Publisher mypub_object =
+	my_handle.advertise<geometry_msgs::Twist>("/RosAria/cmd_vel",1);
+
+	// loop 10 Hz ros::Rate loop_rate(10);
+	geometry_msgs::Twist mypub_msg;
+	// publish the same velocity command 50 times 
+for (int j = 0; j < 50; ++j) {
+	loop_rate.sleep();
+	// refer to http://docs.ros.org/api/geometry_msgs/html/msg/Twist.html 
+	mypub_msg.linear.x = 0.05;
+	// publish 
+	mypub_object.publish(mypub_msg);
+	}
+	// stop by commanding 0 velocity 
+	mypub_msg.linear.x = 0.0; mypub_object.publish(mypub_msg);
+	return 0;
+}
